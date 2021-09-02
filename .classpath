@@ -2,6 +2,6 @@
 <classpath>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="src" path="src"/>
-	<classpathentry kind="var" path="USER_HOME/Desktop/mssql-jdbc-9.4.0.jre11.jar"/>
+	<classpathentry kind="lib" path="libraries/mssql-jdbc-9.4.0.jre11.jar"/>
 	<classpathentry kind="output" path="out/production/tesebada-proyecto-01"/>
 </classpath>

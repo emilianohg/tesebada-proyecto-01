@@ -3,4 +3,7 @@
 	<output-test url="file://$MODULE_DIR$/out/test/tesebada-proyecto-01"/>
 	<exclude-output/>
 	<contentEntry url="file://$MODULE_DIR$"/>
+	<lib name="mssql-jdbc-9.4.0.jre11.jar" scope="COMPILE">
+		<relative-module-cls project-related="jar://$PROJECT_DIR$/libraries/mssql-jdbc-9.4.0.jre11.jar!/"/>
+	</lib>
 </component>
