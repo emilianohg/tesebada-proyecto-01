@@ -1,8 +1,7 @@
 package com.tesebada.database;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.io.Reader;
+import java.sql.*;
 import java.util.Optional;
 
 public class ChequesRepository {
@@ -32,6 +31,37 @@ public class ChequesRepository {
         return Optional.empty();
     }
 
+    public Optional<Cheque> getChequeV2(String noCuenta,int quantity)  {
+     String query = "{call withdraw(?,?,?,?) }";
+
+        CallableStatement statements ;
+
+        try {
+
+            statements = db.getConnection().prepareCall(query);
+
+            statements.setString(1, noCuenta);
+            statements.setInt(2,quantity);
+
+            statements.registerOutParameter(3, Types.DOUBLE);
+            statements.registerOutParameter(4,Types.CHAR);
+
+            boolean res = statements.execute();
+
+            if(!res) {
+
+                double _importe = statements.getDouble(3);
+                String _estatus = statements.getString(4);
+
+                return Optional.of(new Cheque(noCuenta,_importe,_estatus.charAt(0)));
+            }
+
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+        return Optional.empty();
+    }
+
     public Optional<Cheque> withdraw(String noCuenta, int quantity) {
 
         String sql = "DECLARE @importe_total MONEY;" +
@@ -39,8 +69,9 @@ public class ChequesRepository {
                 "EXEC withdraw \""+ noCuenta +"\", "+ quantity +", @importe_total OUTPUT, @estatus OUTPUT;" +
                 "SELECT @importe_total AS importe, @estatus AS estatus;";
 
-        try {
+        System.out.println(sql);
 
+        try {
             Statement stmt = db.getConnection().createStatement();
 
             ResultSet result = stmt.executeQuery(sql);
