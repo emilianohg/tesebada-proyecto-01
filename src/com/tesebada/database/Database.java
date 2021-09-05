@@ -4,7 +4,7 @@ import java.sql.*;
 
 public class Database {
 
-    private final String connectionUrl = "jdbc:sqlserver://localhost:1433;databaseName=tesebada;user=sa;password=root";
+    private final String connectionUrl = "jdbc:sqlserver://localhost:1433;databaseName=tesebada;user=SA;password=PasswordO1.";
     private static Database instance;
     private Connection connection;
 

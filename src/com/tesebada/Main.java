@@ -12,13 +12,7 @@ public class Main {
 
         ChequesRepository chequesRepository = new ChequesRepository();
 
-        // new WindowAccount();
-
-        for (int i = 0; i < 10; i++) {
-            chequesRepository.getChequeV2("00001", 1);
-            Optional<Cheque> cheque = chequesRepository.getCheque("00001");
-            cheque.ifPresent(System.out::println);
-        }
+        new WindowAccount();
 
     }
 }
