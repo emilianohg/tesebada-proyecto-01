@@ -39,11 +39,11 @@ public class WindowAccount extends JFrame {
         String _chequera = noCuenta.getText();
         String _retiro = retiro.getText();
         error.setText("");
+
         if(!flag) {
 
             if (_chequera.isEmpty() || _retiro.isEmpty()) {
                 error.setText("Datos no validos");
-                System.out.println("manejar error");
                 return;
             }
 
@@ -54,6 +54,11 @@ public class WindowAccount extends JFrame {
                 table.update(table.getGraphics());
 
             });
+
+            if (cheque.isEmpty()) {
+                error.setText("No existe la cuenta ingresada");
+                return;
+            }
 
 
             flag = true;
@@ -71,15 +76,19 @@ public class WindowAccount extends JFrame {
                     this.repaint();
 
                 });
+
+                if (cheque.isEmpty()) {
+                    error.setText("No existe la cuenta ingresada");
+                    return;
+                }
             }
 
-            System.out.println("Inicia ciclo");
         }
 
     }
 
     public void init() {
-        this.setSize(500, 500);
+        this.setSize(700, 500);
         this.setLayout(new BorderLayout());
         this.setLocationRelativeTo(null);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

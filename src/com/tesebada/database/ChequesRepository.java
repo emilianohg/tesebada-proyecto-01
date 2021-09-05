@@ -53,6 +53,10 @@ public class ChequesRepository {
                 double _importe = statements.getDouble(3);
                 String _estatus = statements.getString(4);
 
+                if (_estatus == null) {
+                    return Optional.empty();
+                }
+
                 return Optional.of(new Cheque(noCuenta,_importe,_estatus.charAt(0)));
             }
 
