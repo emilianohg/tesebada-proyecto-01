@@ -6,8 +6,7 @@ public class Database {
 
     private static Database instance;
     private Connection connection;
-
-    private String SERVER = "localhost";
+    private String SERVER = "25.7.138.176";
     private String PORT = "1433";
     private String DATABASE_NAME = "tesebada";
     private String USER = "SA";

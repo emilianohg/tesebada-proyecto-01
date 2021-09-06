@@ -55,7 +55,7 @@ public class WindowAccount extends JFrame {
 
             });
 
-            if (cheque.isEmpty()) {
+            if (!cheque.isPresent()) {
                 error.setText("No existe la cuenta ingresada");
                 return;
             }
@@ -77,7 +77,7 @@ public class WindowAccount extends JFrame {
 
                 });
 
-                if (cheque.isEmpty()) {
+                if (!cheque.isPresent()) {
                     error.setText("No existe la cuenta ingresada");
                     return;
                 }
