@@ -1,5 +1,7 @@
 package com.tesebada.database;
 
+import com.tesebada.views.WindowAccount;
+
 import java.io.Reader;
 import java.sql.*;
 import java.util.Optional;
@@ -7,6 +9,7 @@ import java.util.Optional;
 public class ChequesRepository {
 
     Database db = Database.getInstance();
+
 
     public Optional<Cheque> getCheque(String noCuenta) {
 
@@ -32,7 +35,7 @@ public class ChequesRepository {
     }
 
     public Optional<Cheque> getChequeV2(String noCuenta,int quantity)  {
-     String query = "{call withdraw(?,?,?,?) }";
+     String query = "{call reg_withdrawal(?,?,?,?,?) }";
 
         CallableStatement statements ;
 
@@ -40,18 +43,19 @@ public class ChequesRepository {
 
             statements = db.getConnection().prepareCall(query);
 
-            statements.setString(1, noCuenta);
-            statements.setInt(2,quantity);
+            statements.setString(1, WindowAccount.USERNAME);
+            statements.setString(2, noCuenta);
+            statements.setInt(3,quantity);
 
-            statements.registerOutParameter(3, Types.DOUBLE);
-            statements.registerOutParameter(4,Types.CHAR);
+            statements.registerOutParameter(4, Types.DOUBLE);
+            statements.registerOutParameter(5,Types.CHAR);
 
             boolean res = statements.execute();
 
             if(!res) {
 
-                double _importe = statements.getDouble(3);
-                String _estatus = statements.getString(4);
+                double _importe = statements.getDouble(4);
+                String _estatus = statements.getString(5);
 
                 if (_estatus == null) {
                     return Optional.empty();

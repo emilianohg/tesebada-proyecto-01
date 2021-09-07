@@ -6,11 +6,14 @@ public class Database {
 
     private static Database instance;
     private Connection connection;
-    private String SERVER = "25.7.138.176";
+//  private String SERVER = "25.7.138.176";
+private String SERVER = "localhost";
     private String PORT = "1433";
     private String DATABASE_NAME = "tesebada";
-    private String USER = "SA";
-    private String PASSWORD = "PasswordO1.";
+//  private String USER = "SA";
+    private String USER = "sa";
+    private String PASSWORD = "root";
+//  private String PASSWORD = "PasswordO1.";
 
     private Database() {
         try {

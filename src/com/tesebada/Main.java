@@ -8,11 +8,9 @@ import java.sql.SQLException;
 import java.util.Optional;
 
 public class Main {
-    public static void main(String[] args) throws SQLException {
+    public static void main(String[] args)  {
 
-        ChequesRepository chequesRepository = new ChequesRepository();
-
-        new WindowAccount();
+        new WindowAccount("Gerardo");
 
     }
 }

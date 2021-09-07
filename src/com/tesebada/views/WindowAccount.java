@@ -10,59 +10,69 @@ import java.awt.*;
 import java.util.Optional;
 
 public class WindowAccount extends JFrame {
+    public static String USERNAME;
 
-    private JPanel PanelCenter, PanelBottom;
+
+    private JPanel PanelCenter, PanelTop,PanelBottom;
+    private JTableHeader TableHeader;
+
     boolean flag =  false;
-    private JScrollPane scrollTable;
-    private JTable table;
+    private JScrollPane ScrollTable;
+    private JTable Table;
     private ChequesRepository chequesRepository = new ChequesRepository();
 
-    private DefaultTableModel tableModel;
+    private DefaultTableModel TableModel;
 
-    private JTextField noCuenta,retiro;
+    private JTextField tfnoCuenta, tfretiro;
 
-    private JLabel error;
-    private JButton btn;
+    private JLabel labelError;
+    private JButton btnRetiro,btnReporte;
 
-    private Object [] data = {};
+    private Object [] data;
 
-    public WindowAccount() {
+    public WindowAccount(String responsable) {
+        this.USERNAME = responsable;
         init();
         setListeners();
     }
 
-    public void setListeners(){
-        this.btn.addActionListener(event -> startRestCicle());
+    private void setListeners(){
+        this.btnRetiro.addActionListener(event -> startRestCicle());
+        this.btnReporte.addActionListener( event -> showStatusAccount());
     }
 
-    public void startRestCicle(){
-        String _chequera = noCuenta.getText();
-        String _retiro = retiro.getText();
-        error.setText("");
+    private void showStatusAccount(){
+       new Reporte();
+    }
+
+    private void startRestCicle(){
+        String _chequera = tfnoCuenta.getText();
+        String _retiro = tfretiro.getText();
+        labelError.setText("");
 
         if(!flag) {
 
             if (_chequera.isEmpty() || _retiro.isEmpty()) {
-                error.setText("Datos no validos");
+                labelError.setText("Datos no validos");
                 return;
             }
 
             Optional<Cheque> cheque = chequesRepository.getChequeV2(_chequera, Integer.parseInt(_retiro));
             cheque.ifPresent(valor -> {
                 data = new Object[]{ valor.getNoCuenta(), valor.getImporte(), valor.getEstatus() };
-                tableModel.addRow(data);
-                table.update(table.getGraphics());
+                TableModel.addRow(data);
+                Table.update(Table.getGraphics());
 
             });
 
             if (!cheque.isPresent()) {
-                error.setText("No existe la cuenta ingresada");
+                labelError.setText("No existe la cuenta ingresada");
                 return;
             }
 
 
             flag = true;
-            retiro.setEnabled(true);
+            tfretiro.setEnabled(true);
         } else {
 
             for (int i = 0; i < 10 ; i++) {
@@ -70,7 +80,7 @@ public class WindowAccount extends JFrame {
                 cheque.ifPresent(valor -> {
 
                     data = new Object[]{valor.getNoCuenta(), valor.getImporte(), valor.getEstatus()};
-                    tableModel.addRow(data);
+                    TableModel.addRow(data);
                     this.revalidate();
                     this.update(this.getGraphics());
                     this.repaint();
@@ -78,7 +88,7 @@ public class WindowAccount extends JFrame {
                 });
 
                 if (!cheque.isPresent()) {
-                    error.setText("No existe la cuenta ingresada");
+                    labelError.setText("No existe la cuenta ingresada");
                     return;
                 }
             }
@@ -87,51 +97,51 @@ public class WindowAccount extends JFrame {
 
     }
 
-    public void init() {
-        this.setSize(700, 500);
+    private void init() {
+        this.setSize(560, 500);
         this.setLayout(new BorderLayout());
         this.setLocationRelativeTo(null);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         PanelCenter = new JPanel();
+        PanelTop    = new JPanel();
         PanelBottom = new JPanel();
 
+        TableModel  = new DefaultTableModel(new String[]{"No. Cuenta", "Importe", "Estatus"}, 0);
+        Table       = new JTable(TableModel);
+        ScrollTable = new JScrollPane(Table);
+        TableHeader = Table.getTableHeader();
+
+        btnRetiro   = new JButton("Retirar");
+        btnReporte  = new JButton("Reporte");
+        labelError  = new JLabel();
+        tfnoCuenta  = new JTextField();
+        tfretiro    = new JTextField();
+
         PanelCenter.setLayout(new BorderLayout());
-        PanelBottom.setLayout(new GridLayout(0,3));
+        PanelTop.setLayout(new GridLayout(0,3));
 
-        tableModel = new DefaultTableModel(new String[]{"No. Cuenta", "Importe", "Estatus"}, 0);
-
-        tableModel.addRow(data);
-
-        table = new JTable(tableModel);
-        JTableHeader tableHeader = table.getTableHeader();
-
-        scrollTable = new JScrollPane(table);
-
-        PanelCenter.add(tableHeader, BorderLayout.NORTH);
-        PanelCenter.add(scrollTable, BorderLayout.CENTER);
-
-        btn = new JButton("Retirar");
-        noCuenta = new JTextField();
-        retiro = new JTextField();
+        labelError.setForeground(Color.red);
+        tfretiro.setText("0");
+        tfretiro.setEnabled(false);
 
 
-        retiro.setText("0");
-        retiro.setEnabled(false);
-        error = new JLabel();
 
-        error.setForeground(Color.red);
+        PanelTop.add(new JLabel("No. Cuenta"));
+        PanelTop.add(tfnoCuenta);
+        PanelTop.add(labelError);
+        PanelTop.add(new JLabel("Cantidad $: "));
+        PanelTop.add(tfretiro);
+        PanelTop.add(btnRetiro);
 
+        PanelCenter.add(TableHeader, BorderLayout.NORTH);
+        PanelCenter.add(ScrollTable, BorderLayout.CENTER);
 
-        PanelBottom.add(new JLabel("No. Cuenta"));
-        PanelBottom.add(noCuenta);
-        PanelBottom.add(error);
-        PanelBottom.add(new JLabel("Cantidad $: "));
-        PanelBottom.add(retiro);
-        PanelBottom.add(btn);
+        PanelBottom.add(btnReporte);
 
         this.add(PanelCenter, BorderLayout.CENTER);
-        this.add(PanelBottom, BorderLayout.NORTH);
+        this.add(PanelTop, BorderLayout.NORTH);
+        this.add(PanelBottom,BorderLayout.SOUTH);
 
         this.setVisible(true);
 
