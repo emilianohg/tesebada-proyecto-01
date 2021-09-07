@@ -57,7 +57,7 @@ public class WindowAccount extends JFrame {
         for (int i = 0; i < limit ; i++) {
             Optional<Cheque> cheque;
             try {
-                cheque = chequesRepository.getChequeV2(_chequera, Integer.parseInt(_retiro));
+                cheque = chequesRepository.getChequeV2(_chequera, Double.parseDouble(_retiro));
             } catch (InsufficientFundsException e) {
                 labelError.setText("Fondos insuficientes.");
                 return;
