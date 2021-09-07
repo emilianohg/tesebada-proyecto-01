@@ -34,8 +34,8 @@ public class ChequesRepository {
         return Optional.empty();
     }
 
-    public Optional<Cheque> getChequeV2(String noCuenta,int quantity)  {
-     String query = "{call reg_withdrawal(?,?,?,?,?) }";
+    public Optional<Cheque> getChequeV2(String noCuenta,int quantity) throws InsufficientFundsException {
+     String query = "{call reg_withdrawal(?,?,?,?,?,?) }";
 
         CallableStatement statements ;
 
@@ -43,12 +43,13 @@ public class ChequesRepository {
 
             statements = db.getConnection().prepareCall(query);
 
-            statements.setString(1, WindowAccount.USERNAME);
+            statements.setString(1, db.RESPONSABLE);
             statements.setString(2, noCuenta);
             statements.setInt(3,quantity);
 
             statements.registerOutParameter(4, Types.DOUBLE);
             statements.registerOutParameter(5,Types.CHAR);
+            statements.registerOutParameter(6,Types.BIT);
 
             boolean res = statements.execute();
 
@@ -56,6 +57,11 @@ public class ChequesRepository {
 
                 double _importe = statements.getDouble(4);
                 String _estatus = statements.getString(5);
+                boolean _hasError = statements.getBoolean(6);
+
+                if (_hasError) {
+                    throw new InsufficientFundsException();
+                }
 
                 if (_estatus == null) {
                     return Optional.empty();

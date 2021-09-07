@@ -2,6 +2,7 @@ package com.tesebada.views;
 
 import com.tesebada.database.Cheque;
 import com.tesebada.database.ChequesRepository;
+import com.tesebada.database.InsufficientFundsException;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
@@ -10,13 +11,10 @@ import java.awt.*;
 import java.util.Optional;
 
 public class WindowAccount extends JFrame {
-    public static String USERNAME;
-
 
     private JPanel PanelCenter, PanelTop,PanelBottom;
     private JTableHeader TableHeader;
 
-    boolean flag =  false;
     private JScrollPane ScrollTable;
     private JTable Table;
     private ChequesRepository chequesRepository = new ChequesRepository();
@@ -30,8 +28,7 @@ public class WindowAccount extends JFrame {
 
     private Object [] data;
 
-    public WindowAccount(String responsable) {
-        this.USERNAME = responsable;
+    public WindowAccount() {
         init();
         setListeners();
     }
@@ -50,50 +47,36 @@ public class WindowAccount extends JFrame {
         String _retiro = tfretiro.getText();
         labelError.setText("");
 
-        if(!flag) {
+        if (_chequera.isEmpty() || _retiro.isEmpty()) {
+            labelError.setText("Datos no validos");
+            return;
+        }
 
-            if (_chequera.isEmpty() || _retiro.isEmpty()) {
-                labelError.setText("Datos no validos");
+        int limit = _retiro.equals("0") ? 1 : 10;
+
+        for (int i = 0; i < limit ; i++) {
+            Optional<Cheque> cheque;
+            try {
+                cheque = chequesRepository.getChequeV2(_chequera, Integer.parseInt(_retiro));
+            } catch (InsufficientFundsException e) {
+                labelError.setText("Fondos insuficientes.");
                 return;
             }
-
-            Optional<Cheque> cheque = chequesRepository.getChequeV2(_chequera, Integer.parseInt(_retiro));
             cheque.ifPresent(valor -> {
-                data = new Object[]{ valor.getNoCuenta(), valor.getImporte(), valor.getEstatus() };
+                data = new Object[]{valor.getNoCuenta(), valor.getImporte(), valor.getEstatus()};
                 TableModel.addRow(data);
-                Table.update(Table.getGraphics());
-
+                this.revalidate();
+                this.update(this.getGraphics());
+                this.repaint();
             });
 
             if (!cheque.isPresent()) {
                 labelError.setText("No existe la cuenta ingresada");
                 return;
             }
-
-
-            flag = true;
-            tfretiro.setEnabled(true);
-        } else {
-
-            for (int i = 0; i < 10 ; i++) {
-                Optional<Cheque> cheque = chequesRepository.getChequeV2(_chequera, Integer.parseInt(_retiro));
-                cheque.ifPresent(valor -> {
-
-                    data = new Object[]{valor.getNoCuenta(), valor.getImporte(), valor.getEstatus()};
-                    TableModel.addRow(data);
-                    this.revalidate();
-                    this.update(this.getGraphics());
-                    this.repaint();
-
-                });
-
-                if (!cheque.isPresent()) {
-                    labelError.setText("No existe la cuenta ingresada");
-                    return;
-                }
-            }
-
         }
+
+        tfretiro.setEnabled(true);
 
     }
 
@@ -109,6 +92,7 @@ public class WindowAccount extends JFrame {
 
         TableModel  = new DefaultTableModel(new String[]{"No. Cuenta", "Importe", "Estatus"}, 0);
         Table       = new JTable(TableModel);
+        // Table.setFont(new Font("Arial", Font.TRUETYPE_FONT, 22));
         ScrollTable = new JScrollPane(Table);
         TableHeader = Table.getTableHeader();
 

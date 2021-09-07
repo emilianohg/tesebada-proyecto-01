@@ -24,7 +24,7 @@ public class StatusAccount {
                 String nocuenta    = String.valueOf(res.getString("nocuenta"));
                 String cantidad    = String.valueOf(res.getDouble("cantidad"));
                 String responsable = String.valueOf(res.getString("responsable"));
-                String created_at  = String.valueOf(res.getDate("created_at"));
+                String created_at  = String.valueOf(res.getTimestamp("created_at"));
 
                 String retiro[] = {nocuenta,cantidad,responsable,created_at};
 

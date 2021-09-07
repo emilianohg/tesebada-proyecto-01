@@ -28,8 +28,11 @@ BEGIN
         SELECT @importe = importe, @estatus = estatus FROM tesebada.dbo.cheques WITH (UPDLOCK) WHERE nocuenta = @nocuenta;
         WAITFOR DELAY '00:00:01.000';
         SET @importe = @importe - @amount;
+
+        if (@importe < 0) return;
+
         UPDATE tesebada.dbo.cheques SET importe = @importe WHERE nocuenta = @nocuenta;
-		insert into tesebada.dbo.retiros values (@nocuenta,@amount,@responsable,default);
+		insert into tesebada.dbo.retiros values (@nocuenta, @amount, @responsable, default);
     COMMIT;
 END;
 
