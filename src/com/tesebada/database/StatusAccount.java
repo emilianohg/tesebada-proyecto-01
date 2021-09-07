@@ -13,7 +13,7 @@ public class StatusAccount {
 
 
     public StatusAccount(DefaultTableModel TableModel){
-        String sql = String.format("SELECT * FROM retiros");
+        String sql = "SELECT retiros.*, usuarios.nombre as responsable FROM retiros INNER JOIN usuarios ON retiros.id_usuario = usuarios.id";
         try {
             Statement stmt = db.getConnection().createStatement();
 

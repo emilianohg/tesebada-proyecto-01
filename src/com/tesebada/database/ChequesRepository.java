@@ -43,7 +43,7 @@ public class ChequesRepository {
 
             statements = db.getConnection().prepareCall(query);
 
-            statements.setString(1, db.RESPONSABLE);
+            statements.setInt(1, db.ID_USUARIO);
             statements.setString(2, noCuenta);
             statements.setInt(3,quantity);
 

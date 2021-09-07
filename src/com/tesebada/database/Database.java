@@ -15,7 +15,7 @@ public class Database {
     private final String DATABASE_NAME;
     private final String USER;
     private final String PASSWORD;
-    public final String RESPONSABLE;
+    public final int ID_USUARIO;
 
     private Database() {
         this.env = new Environment();
@@ -25,7 +25,7 @@ public class Database {
         this.USER = env.getValue("USER");
         this.PASSWORD = env.getValue("PASSWORD");
         this.DATABASE_NAME = env.getValue("DATABASE_NAME");
-        this.RESPONSABLE = env.getValue("RESPONSABLE");
+        this.ID_USUARIO = Integer.parseInt(env.getValue("ID_USUARIO"));
 
         try {
             connection = DriverManager.getConnection(this.getConnectionUrl());
